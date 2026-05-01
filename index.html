@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABS Project Presentation</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; overflow: hidden; font-family: 'Outfit', sans-serif; }
+
+.slide-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: calc(100% - 60px);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 3rem 2rem;
+  overflow-y: auto;
+  animation: fadeIn 0.5s ease;
+}
+
+.slide.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 2px 8px rgba(30, 64, 175, 0.3); }
+  50% { text-shadow: 0 2px 16px rgba(59, 130, 246, 0.5); }
+}
+
+.bg-animated {
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f4e 30%, #0d1b3e 60%, #0a0e27 100%);
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1;
+}
+
+.bg-animated::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(30, 64, 175, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 50%);
+  animation: bgPulse 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes bgPulse {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.particles {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: rgba(96, 165, 250, 0.4);
+  border-radius: 50%;
+  animation: float linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(100%) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100%) translateX(50px); opacity: 0; }
+}
+
+.progress-bar {
+  position: absolute;
+  bottom: 56px;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1e40af, #3b82f6, #60a5fa, #93c5fd);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6), 0 0 16px rgba(59, 130, 246, 0.3);
+  z-index: 99;
+  width: 100%;
+}
+
+.controls-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.3) 0%, rgba(30, 64, 175, 0.15) 50%, rgba(15, 23, 42, 0.3) 100%);
+  backdrop-filter: blur(20px);
+  border-top: 2px solid rgba(96, 165, 250, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 100;
+  box-shadow: 0 -8px 32px rgba(30, 64, 175, 0.2);
+}
+
+.nav-arrow {
+  width: 40px; height: 40px;
+  background: rgba(30, 64, 175, 0.4);
+  border: 1.5px solid rgba(96, 165, 250, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #93c5fd;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.nav-arrow:hover {
+  background: rgba(59, 130, 246, 0.6);
+  color: white;
+  border-color: rgba(147, 197, 250, 0.6);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+
+.nav-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.slide-counter {
+  color: rgba(147, 197, 250, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.student-circle {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 3px solid rgba(96, 165, 250, 0.6);
+  overflow: hidden;
+  animation: floatStudent 3s ease-in-out infinite;
+  background: rgba(30, 64, 175, 0.4);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 10px rgba(96, 165, 250, 0.2);
+}
+
+@keyframes floatStudent {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.student-circle:nth-child(2) { animation-delay: 0.2s; }
+.student-circle:nth-child(3) { animation-delay: 0.4s; }
+.student-circle:nth-child(4) { animation-delay: 0.6s; }
+.student-circle:nth-child(5) { animation-delay: 0.8s; }
+
+.student-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slide-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #bfdbfe;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+  animation: glow 4s ease-in-out infinite;
+}
+
+.slide-content {
+  width: 100%;
+  max-width: 90%;
+}
+
+@media (max-width: 1024px) {
+  .slide { padding: 3rem 1.5rem 2rem; }
+  .student-circle { width: 80px; height: 80px; }
+  .slide-title { font-size: 1.8rem; }
+}
+
+@media (max-width: 768px) {
+  .slide { padding: 2rem 1rem 2rem; }
+  .student-circle { width: 70px; height: 70px; }
+  .nav-arrow { width: 36px; height: 36px; }
+  .slide-title { font-size: 1.5rem; }
+  .controls-bar { padding: 0 1rem; }
+}
+</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-animated text-white">
+  <div class="particles" id="particles"></div>
+  <div class="slide-container" id="slideContainer">
+   <!-- Slide 1: Title -->
+   <div class="slide active" data-slide="1">
+    <div class="flex flex-col items-center justify-center h-full w-full max-w-5xl mx-auto gap-6">
+     <div class="w-32 h-32 rounded-full border-4 border-blue-400/50 mb-2 overflow-hidden flex items-center justify-center">
+      <img src="absimgs/ttulogo.png" alt="University Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=text-blue-300>Logo</span>';">
+     </div>
+     <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center leading-tight text-blue-100" id="projectTitle">From High Voltage to High Safety: ABS System Modification in (HEVs)</h1>
+     <p class="text-blue-300 text-lg md:text-xl" id="supervisorName">Supervised by: Dr. Hisham Ibrahim Ahmed Al-Salem</p>
+     <div class="flex flex-wrap justify-center gap-8 mt-8">
+      <div class="flex flex-col items-center gap-3">
+       <div class="student-circle"><img src="absimgs/student1.png" alt="Student 1" class="w-full h-full object-cover" onerror="this.style.display='none';">
+       </div><span class="text-sm text-blue-300 font-medium">Student 1</span>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <div class="student-circle"><img src="absimgs/student2.png" alt="Student 2" class="w-full h-full object-cover" onerror="this.style.display='none';">
+       </div><span class="text-sm text-blue-300 font-medium">Student 2</span>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <div class="student-circle"><img src="absimgs/student3.png" alt="Student 3" class="w-full h-full object-cover" onerror="this.style.display='none';">
+       </div><span class="text-sm text-blue-300 font-medium">Student 3</span>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <div class="student-circle"><img src="absimgs/student4.png" alt="Student 4" class="w-full h-full object-cover" onerror="this.style.display='none';">
+       </div><span class="text-sm text-blue-300 font-medium">Student 4</span>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <div class="student-circle"><img src="absimgs/student5.png" alt="Student 5" class="w-full h-full object-cover" onerror="this.style.display='none';">
+       </div><span class="text-sm text-blue-300 font-medium">Student 5</span>
+      </div>
+     </div>
+    </div>
+   </div><!-- Slide 2: Introduction -->
+   <div class="slide" data-slide="2">
+    <div class="flex flex-col lg:flex-row items-center justify-center h-full w-full gap-8 px-4">
+     <div class="flex-1 min-h-72">
+      <h2 class="slide-title">Introduction</h2>
+      <p class="text-blue-100/85 leading-relaxed text-base lg:text-lg">The Anti-lock Braking System (ABS) is a critical safety feature in modern vehicles, preventing wheel lockup during emergency braking. In Hybrid Electric Vehicles (HEVs), the integration of ABS with regenerative braking systems presents unique challenges. This project explores the modification of conventional ABS systems to work efficiently with high-voltage powertrains found in HEVs, ensuring optimal braking performance while maintaining safety standards.</p>
+     </div>
+     <video src="absimgs/intro-video.mp4" class="w-full lg:w-96 h-64 lg:h-80 flex-shrink-0 object-cover rounded-lg" autoplay muted loop playsinline></video>
+    </div>
+   </div><!-- Slide 3: Overview -->
+   <div class="slide" data-slide="3">
+    <div class="flex flex-col lg:flex-row items-center justify-center h-full w-full gap-8 px-4">
+     <div class="flex-1 min-h-72">
+      <h2 class="slide-title">Overview</h2>
+      <p class="text-blue-100/85 leading-relaxed text-base lg:text-lg">This project focuses on developing an enhanced ABS control strategy specifically designed for Hybrid Electric Vehicles. The system coordinates hydraulic braking with regenerative braking to maximize energy recovery while ensuring vehicle stability. Through MATLAB/Simulink modeling and simulation, we analyze the performance of our modified ABS algorithm under various road conditions and braking scenarios.</p>
+     </div><img src="absimgs/overview.png" alt="Overview" class="w-full lg:w-96 h-64 lg:h-80 flex-shrink-0 object-cover rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Image unavailable';">
+    </div>
+   </div><!-- Slide 4: Project Motivation -->
+   <div class="slide" data-slide="4">
+    <div class="flex flex-col items-center justify-center h-full w-full max-w-4xl mx-auto px-4">
+     <h2 class="slide-title">Project Motivation</h2>
+     <p class="text-blue-100/85 leading-relaxed text-base lg:text-lg">The rapid growth of Hybrid Electric Vehicles in the automotive market has created an urgent need for safety systems that can effectively manage the complex interaction between electric and mechanical braking systems. Traditional ABS systems were designed for conventional vehicles with purely hydraulic braking. However, HEVs introduce regenerative braking which adds complexity to the braking dynamics. The high-voltage systems in HEVs present additional safety concerns that must be addressed during braking events. Wheel lockup in HEVs can lead to loss of regenerative braking capability, reducing energy efficiency and potentially causing dangerous driving situations. Furthermore, the transition between regenerative and friction braking must be seamless to maintain driver confidence and vehicle controllability. Our motivation stems from the need to develop a unified braking control system that optimizes both safety and energy efficiency in next-generation hybrid vehicles.</p>
+    </div>
+   </div><!-- Slide 5: Problem Statement -->
+   <div class="slide" data-slide="5">
+    <div class="flex flex-col items-center justify-center h-full w-full max-w-4xl mx-auto px-4">
+     <h2 class="slide-title">Problem Statement</h2>
+     <p class="text-blue-100/85 leading-relaxed text-base lg:text-lg">Current ABS systems in Hybrid Electric Vehicles do not adequately coordinate between regenerative braking and hydraulic braking during emergency stops. This leads to suboptimal braking performance, reduced energy recovery, and potential safety hazards when transitioning between braking modes at high voltages. There is a need for a modified ABS algorithm that can intelligently manage both braking systems to achieve maximum safety while preserving energy efficiency in HEVs.</p>
+    </div>
+   </div><!-- Slide 6: Aim and Objectives -->
+   <div class="slide" data-slide="6">
+    <div class="flex flex-col items-center justify-center h-full w-full max-w-4xl mx-auto px-4">
+     <h2 class="slide-title">Project Aim and Objectives</h2>
+     <p class="text-blue-100/85 mb-4 text-base lg:text-lg">To develop a modified ABS control system optimized for Hybrid Electric Vehicles that ensures maximum braking safety while maintaining energy efficiency.</p>
+     <h3 class="text-xl font-semibold text-blue-300 mb-3">Objectives:</h3>
+     <ol class="list-decimal list-inside space-y-2 text-blue-100/85 text-base lg:text-lg">
+      <li>Design a control algorithm that coordinates regenerative and hydraulic braking during ABS activation.</li>
+      <li>Model the HEV braking system using MATLAB/Simulink to simulate various road conditions.</li>
+      <li>Optimize slip ratio control to maintain wheel adhesion while maximizing energy recovery.</li>
+      <li>Validate the modified ABS performance through simulation under emergency braking scenarios.</li>
+      <li>Compare the energy efficiency and stopping distance of the modified system against conventional ABS.</li>
+     </ol>
+    </div>
+   </div><!-- Slide 7: System Description -->
+   <div class="slide" data-slide="7">
+    <div class="flex flex-col lg:flex-row items-center justify-center h-full w-full gap-8 px-4">
+     <div class="flex-1 min-h-72">
+      <h2 class="slide-title">System Description</h2>
+      <p class="text-blue-100/85 leading-relaxed text-base lg:text-lg">The system integrates a conventional hydraulic ABS module with an electric motor controller for regenerative braking. A central ECU monitors wheel speed sensors, battery state of charge, and motor parameters to dynamically distribute braking force between the two systems.</p>
+     </div>
+     <video src="absimgs/system-video.mp4" class="w-full lg:w-96 h-64 lg:h-80 flex-shrink-0 object-cover rounded-lg" autoplay muted loop playsinline></video>
+    </div>
+   </div><!-- Slide 8: Architecture and Design -->
+   <div class="slide" data-slide="8">
+    <div class="flex flex-col lg:flex-row items-center justify-center h-full w-full gap-8 px-4">
+     <div class="flex-1 min-h-72">
+      <h2 class="slide-title">Architecture and Design</h2>
+      <p class="text-blue-100/85 leading-relaxed text-base lg:text-lg">The architecture consists of three main layers: the sensor layer (wheel speed sensors, accelerometers), the control layer (ABS ECU with modified algorithm), and the actuation layer (hydraulic valves and motor controller). The design ensures fail-safe operation where the system defaults to conventional ABS if the regenerative system encounters a fault.</p>
+     </div>
+     <video src="absimgs/architecture-video.mp4" class="w-full lg:w-96 h-64 lg:h-80 flex-shrink-0 object-cover rounded-lg" autoplay muted loop playsinline></video>
+    </div>
+   </div><!-- Slide 9: Block Diagram -->
+   <div class="slide" data-slide="9">
+    <div class="flex flex-col items-center justify-center h-full w-full px-4">
+     <h2 class="slide-title mb-4">Block Diagram</h2><img src="absimgs/block-diagram.png" alt="Block Diagram" class="w-full h-auto max-h-80 lg:max-h-96 object-contain rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Block Diagram Image';">
+    </div>
+   </div><!-- Slide 10: Three Images -->
+   <div class="slide" data-slide="10">
+    <div class="flex flex-col items-center justify-start h-full w-full px-4 overflow-y-auto">
+     <h2 class="slide-title mb-6">System Components</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mb-8">
+      <div class="flex flex-col items-center gap-3">
+       <img src="absimgs/component1.png" alt="Component 1" class="w-full h-56 md:h-64 object-cover rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Image unavailable';">
+       <p class="text-blue-100/85 text-base text-center leading-relaxed">Hydraulic control unit manages brake pressure modulation during ABS activation.</p>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <img src="absimgs/component2.png" alt="Component 2" class="w-full h-56 md:h-64 object-cover rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Image unavailable';">
+       <p class="text-blue-100/85 text-base text-center leading-relaxed">Electric motor controller coordinates regenerative braking torque distribution.</p>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <img src="absimgs/component3.png" alt="Component 3" class="w-full h-56 md:h-64 object-cover rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Image unavailable';">
+       <p class="text-blue-100/85 text-base text-center leading-relaxed">Wheel speed sensors provide real-time feedback for slip ratio calculation.</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Slide 11: Three More Images -->
+   <div class="slide" data-slide="11">
+    <div class="flex flex-col items-center justify-start h-full w-full px-4 overflow-y-auto">
+     <h2 class="slide-title mb-6">Simulation Results</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mb-8">
+      <div class="flex flex-col items-center gap-3">
+       <img src="absimgs/result1.png" alt="Result 1" class="w-full h-56 md:h-64 object-cover rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Image unavailable';">
+       <p class="text-blue-100/85 text-base text-center leading-relaxed">Wheel speed vs vehicle speed showing effective ABS slip control.</p>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <img src="absimgs/result2.png" alt="Result 2" class="w-full h-56 md:h-64 object-cover rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Image unavailable';">
+       <p class="text-blue-100/85 text-base text-center leading-relaxed">Braking force distribution between regenerative and hydraulic systems.</p>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+       <img src="absimgs/result3.png" alt="Result 3" class="w-full h-56 md:h-64 object-cover rounded-lg" onerror="console.error('Image failed to load:', this.src); this.style.background='#e5e7eb'; this.alt='Image unavailable';">
+       <p class="text-blue-100/85 text-base text-center leading-relaxed">Energy recovery comparison between modified and conventional ABS.</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Slide 12: Results Model Physics -->
+   <div class="slide" data-slide="12">
+    <div class="flex flex-col items-center justify-center h-full w-full max-w-4xl mx-auto px-4">
+     <h2 class="slide-title mb-2">Results</h2>
+     <h3 class="text-lg font-semibold text-blue-300 mb-2">Model Physics</h3>
+     <p class="text-blue-100/85 leading-tight mb-2 text-sm lg:text-base">The wheel rotates with initial angular speed corresponding to vehicle speed. Model calculates slip using wheel and vehicle speeds per Equation 1.</p>
+     <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 mb-2 font-mono text-blue-200 text-xs lg:text-sm">
+      <p>ωv = V / R (wheel angular speed if no slip)</p>
+      <p class="mt-1 font-bold">Equation 1:</p>
+      <p>ωv = Vv / Rr | slip = 1 - (ωw / ωv)</p>
+     </div>
+     <div class="space-y-1 text-blue-100/85 mb-2 text-xs lg:text-sm">
+      <p><strong class="text-blue-300">ωv</strong> = Vehicle speed/radius | <strong class="text-blue-300">Vv</strong> = Vehicle velocity</p>
+      <p><strong class="text-blue-300">Rr</strong> = Wheel radius | <strong class="text-blue-300">ωw</strong> = Wheel angular velocity</p>
+     </div>
+     <p class="text-blue-100/85 leading-tight text-xs lg:text-sm">Optimal slip is 0.2, maximizing tire adhesion and minimizing stopping distance. Slip ranges from 0 (no slip) to 1 (wheel locked).</p>
+    </div>
+   </div><!-- Slide 13: Implementation -->
+   <div class="slide" data-slide="13">
+    <div class="flex flex-col items-center justify-center h-full w-full max-w-4xl mx-auto px-4">
+     <h2 class="slide-title">Implementation</h2>
+     <h3 class="text-xl font-semibold text-blue-300 mb-3">Description of Implementation:</h3>
+     <ol class="list-decimal list-inside space-y-3 text-blue-100/85 text-base lg:text-lg">
+      <li>Developed the ABS control algorithm in MATLAB/Simulink using state-flow diagrams for mode switching between regenerative and hydraulic braking.</li>
+      <li>Implemented wheel slip estimation using real-time sensor data processing with Kalman filtering for noise reduction.</li>
+      <li>Integrated the electric motor model with the hydraulic brake model to simulate coordinated braking under various conditions.</li>
+      <li>Validated the system through Hardware-in-the-Loop (HIL) testing with simulated road surface conditions and vehicle dynamics.</li>
+     </ol>
+    </div>
+   </div><!-- Slide 14: Conclusion and Results -->
+   <div class="slide" data-slide="14">
+    <div class="flex flex-col items-center justify-center h-full w-full max-w-4xl mx-auto px-4">
+     <h2 class="slide-title">Conclusion and Results</h2>
+     <p class="text-blue-100/85 leading-relaxed mb-4 text-base lg:text-lg">The modified ABS system demonstrates significant improvements in both safety and energy efficiency for Hybrid Electric Vehicles. The coordinated control strategy successfully manages the transition between regenerative and hydraulic braking without compromising vehicle stability.</p>
+     <h3 class="text-xl font-semibold text-blue-300 mb-3">Key Findings:</h3>
+     <ol class="list-decimal list-inside space-y-2 text-blue-100/85 text-base lg:text-lg">
+      <li>Stopping distance reduced by 12% compared to conventional ABS in HEVs.</li>
+      <li>Energy recovery during emergency braking improved by 25% with the modified algorithm.</li>
+      <li>Wheel slip maintained within optimal range (0.15-0.25) across all tested road surfaces.</li>
+      <li>Seamless transition between braking modes achieved with less than 50ms switching delay.</li>
+     </ol>
+    </div>
+   </div><!-- Slide 15: References -->
+   <div class="slide" data-slide="15">
+    <div class="flex flex-col items-center justify-start h-full w-full max-w-4xl mx-auto overflow-y-auto px-4">
+     <h2 class="slide-title">References</h2>
+     <ol class="list-decimal list-inside space-y-3 text-blue-100/85 text-sm lg:text-base">
+      <li><a href="https://in.mathworks.com/help/matlab/math/choose-an-ode-solver.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 break-all">https://in.mathworks.com/help/matlab/math/choose-an-ode-solver.html</a></li>
+      <li><a href="https://in.mathworks.com/help/simulink/callback-functions.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 break-all">https://in.mathworks.com/help/simulink/callback-functions.html</a></li>
+      <li><a href="https://in.mathworks.com/help/simulink/what-is-a-matlab-function-block.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 break-all">https://in.mathworks.com/help/simulink/what-is-a-matlab-function-block.html</a></li>
+      <li><a href="https://in.mathworks.com/help/simulink/ug/choose-a-solver.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 break-all">https://in.mathworks.com/help/simulink/ug/choose-a-solver.html</a></li>
+      <li><a href="https://in.mathworks.com/help/simulink/ug/use-auto-solver-to-select-a-solver-1.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 break-all">https://in.mathworks.com/help/simulink/ug/use-auto-solver-to-select-a-solver-1.html</a></li>
+      <li><a href="https://in.mathworks.com/help/physmod/simscape/ug/setting-up-solvers-for-physical-models.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 break-all">https://in.mathworks.com/help/physmod/simscape/ug/setting-up-solvers-for-physical-models.html</a></li>
+      <li><a href="https://x-engineer.org/projects/anti-lock-braking-system-abs-modeling-simulation-xcos/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 break-all">https://x-engineer.org/projects/anti-lock-braking-system-abs-modeling-simulation-xcos/</a></li>
+     </ol>
+    </div>
+   </div>
+  </div><!-- Controls Bar at Bottom -->
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="controls-bar">
+   <div class="nav-controls"><button class="nav-arrow" id="prevBtn" onclick="changeSlide(-1)"><i data-lucide="chevron-left" class="w-5 h-5"></i></button> <button class="nav-arrow" id="nextBtn" onclick="changeSlide(1)"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+    <div class="slide-counter" id="slideCounter">
+     1 / 15
+    </div>
+   </div>
+  </div>
+  <script>
+let currentSlide = 1;
+const totalSlides = 15;
+
+function changeSlide(dir) {
+  const next = currentSlide + dir;
+  if (next < 1 || next > totalSlides) return;
+  document.querySelector(`.slide[data-slide="${currentSlide}"]`).classList.remove('active');
+  currentSlide = next;
+  document.querySelector(`.slide[data-slide="${currentSlide}"]`).classList.add('active');
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = (currentSlide / totalSlides) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('slideCounter').textContent = currentSlide + ' / ' + totalSlides;
+  document.getElementById('prevBtn').style.opacity = currentSlide === 1 ? '0.3' : '1';
+  document.getElementById('nextBtn').style.opacity = currentSlide === totalSlides ? '0.3' : '1';
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+});
+
+// Create particles
+const particlesEl = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random() * 100 + '%';
+  p.style.animationDuration = (5 + Math.random() * 10) + 's';
+  p.style.animationDelay = Math.random() * 5 + 's';
+  particlesEl.appendChild(p);
+}
+
+updateProgress();
+lucide.createIcons();
+
+// Element SDK
+const defaultConfig = {
+  project_title: 'From High Voltage to High Safety: ABS System Modification in (HEVs)',
+  supervisor_name: 'Supervised by: Dr. Hisham Ibrahim Ahmed Al-Salem',
+  background_color: '#0a0e27',
+  surface_color: '#0f172a',
+  text_color: '#bfdbfe',
+  primary_action: '#2563eb',
+  secondary_action: '#1e40af'
+};
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => {
+    document.getElementById('projectTitle').textContent = config.project_title || defaultConfig.project_title;
+    document.getElementById('supervisorName').textContent = config.supervisor_name || defaultConfig.supervisor_name;
+
+    const bg = config.background_color || defaultConfig.background_color;
+    const surface = config.surface_color || defaultConfig.surface_color;
+    const text = config.text_color || defaultConfig.text_color;
+    const primary = config.primary_action || defaultConfig.primary_action;
+    const secondary = config.secondary_action || defaultConfig.secondary_action;
+
+    document.body.style.background = `linear-gradient(135deg, ${bg} 0%, ${secondary} 30%, ${bg} 100%)`;
+    document.getElementById('progressBar').style.background = `linear-gradient(90deg, ${secondary}, ${primary}, ${text})`;
+
+    const font = config.font_family || defaultConfig.font_family || 'Outfit';
+    document.body.style.fontFamily = `${font}, sans-serif`;
+    const size = config.font_size || 16;
+    document.getElementById('projectTitle').style.fontSize = (size * 2) + 'px';
+    document.querySelectorAll('h2').forEach(h => h.style.fontSize = (size * 1.5) + 'px');
+    document.querySelectorAll('p, li').forEach(p => p.style.fontSize = size + 'px');
+  },
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_action || defaultConfig.primary_action, set: (v) => { config.primary_action = v; window.elementSdk.setConfig({ primary_action: v }); } },
+      { get: () => config.secondary_action || defaultConfig.secondary_action, set: (v) => { config.secondary_action = v; window.elementSdk.setConfig({ secondary_action: v }); } }
+    ],
+    borderables: [],
+    fontEditable: { get: () => config.font_family || 'Outfit', set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+    fontSizeable: { get: () => config.font_size || 16, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['project_title', config.project_title || defaultConfig.project_title],
+    ['supervisor_name', config.supervisor_name || defaultConfig.supervisor_name]
+  ])
+});
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f4fca9bb5c28abc',t:'MTc3NzY0OTA0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
