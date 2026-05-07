@@ -17,6 +17,10 @@
     box-sizing:border-box;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
     overflow:hidden;
     font-family:'Poppins',sans-serif;
@@ -181,8 +185,11 @@ button:hover{
 
 .logo{
     width:160px;
-    margin:auto;
-    margin-bottom:30px;
+    height:auto;
+    display:block;
+    margin:0 auto 30px auto;
+    border:none;
+    box-shadow:none;
 }
 
 .project-title{
@@ -315,6 +322,78 @@ table th{
     border-radius:10px;
 }
 
+/* ================= INTRO SECTION ================= */
+
+.intro-container{
+    display:flex;
+    gap:40px;
+    align-items:center;
+    margin-top:30px;
+    flex-wrap:wrap;
+}
+
+.intro-video{
+    flex:1;
+    min-width:350px;
+}
+
+.intro-video video{
+    width:100%;
+    border-radius:20px;
+    border:2px solid rgba(0,229,255,0.2);
+    box-shadow:0 0 25px rgba(0,229,255,0.2);
+}
+
+.intro-text{
+    flex:1;
+    min-width:350px;
+}
+
+.intro-text p{
+    margin-bottom:18px;
+    line-height:1.9;
+    font-size:17px;
+}
+
+/* ================= OVERVIEW SECTION ================= */
+
+.overview-container{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:50px;
+    margin-top:40px;
+    flex-wrap:wrap;
+}
+
+.overview-text{
+    flex:1;
+    min-width:320px;
+}
+
+.overview-text p{
+    font-size:22px;
+    line-height:2;
+    margin-bottom:25px;
+    color:#e5e5e5;
+}
+
+.overview-video{
+    flex:1;
+    min-width:350px;
+}
+
+.overview-video video{
+    width:100%;
+    height:380px;
+    object-fit:cover;
+    border-radius:25px;
+    border:2px solid rgba(0,229,255,0.15);
+    box-shadow:
+    0 0 25px rgba(0,229,255,0.2),
+    0 0 60px rgba(0,229,255,0.08);
+}
+
 /* ================= RESPONSIVE ================= */
 
 @media(max-width:1200px){
@@ -380,155 +459,204 @@ button{
 
 }
 
-@media(max-width:768px){
+/* ================= MOBILE VERSION ================= */
+
+@media (max-width:768px){
 
 body{
     overflow:auto;
 }
 
+/* السلايدر عمودي */
 .slider{
-    height:100vh;
+    display:block;
+    width:100%;
+    height:auto;
+    transform:none !important;
 }
 
+/* السلايدات */
 .slide{
-    padding:30px 15px;
-    align-items:flex-start;
+    min-width:100%;
+    width:100%;
+    height:auto;
+    min-height:100vh;
+
+    padding:20px 12px;
+
+    display:block;
 }
 
+/* المحتوى */
 .slide-content{
-    padding:25px;
-    border-radius:20px;
+    width:100%;
+    max-width:100%;
+    padding:20px;
+    border-radius:18px;
 }
 
+/* العناوين */
 h1{
-    font-size:28px;
+    font-size:24px;
     line-height:1.4;
 }
 
 h2{
-    font-size:22px;
+    font-size:19px;
 }
 
-p,li{
-    font-size:16px;
+/* النصوص */
+p,
+li{
+    font-size:15px;
     line-height:1.8;
 }
 
-.project-title{
-    font-size:26px;
-}
-
-.doctor{
-    font-size:20px;
-    margin-bottom:35px;
-}
-
+/* اللوجو */
 .logo{
-    width:120px;
+    width:90px;
+    margin-bottom:20px;
 }
 
-.students{
-    gap:20px;
-}
-
-.student img{
-    width:95px;
-    height:95px;
-}
-
-.nav-buttons{
-    padding:0 20px;
-    bottom:20px;
-}
-
-button{
-    width:55px;
-    height:55px;
+/* العنوان */
+.project-title{
     font-size:22px;
 }
 
+/* الدكتور */
+.doctor{
+    font-size:18px;
+    margin-bottom:25px;
+}
+
+/* الطلاب */
+.students{
+    gap:15px;
+}
+
+.student img{
+    width:75px;
+    height:75px;
+}
+
+.student p{
+    font-size:13px;
+}
+
+/* الفيديو */
+video{
+    width:100%;
+    height:auto;
+}
+
+/* الصور */
+img{
+    width:100%;
+    max-width:100%;
+    height:auto;
+}
+
+/* الجداول */
 table{
     display:block;
     overflow-x:auto;
     white-space:nowrap;
 }
 
-.double-images div,
-.card,
-.intro-video,
-.intro-text,
-.overview-text,
-.overview-video{
-    min-width:100%;
+/* العناصر */
+.intro-container,
+.overview-container,
+.double-images,
+.cards{
+    flex-direction:column;
 }
 
+/* إزالة الأحجام الثابتة */
+.intro-video,
+.intro-text,
+.overview-video,
+.overview-text,
+.card,
+.double-images div{
+    min-width:100%;
+    width:100%;
+}
+
+/* الفيديو */
 .overview-video video{
     height:auto;
 }
 
+/* الأزرار */
+.nav-buttons{
+    position:fixed;
+    bottom:15px;
+    padding:0 15px;
 }
+
+button{
+    width:48px;
+    height:48px;
+    font-size:20px;
+}
+
+}
+
+/* ================= VERY SMALL DEVICES ================= */
 
 @media(max-width:480px){
 
 .slide{
-    padding:20px 10px;
+    padding:15px 8px;
 }
 
 .slide-content{
-    padding:20px;
+    padding:16px;
 }
 
 h1{
-    font-size:24px;
-}
-
-h2{
-    font-size:20px;
-}
-
-p,li{
-    font-size:15px;
-}
-
-.project-title{
     font-size:22px;
 }
 
-.doctor{
+h2{
     font-size:18px;
 }
 
-.logo{
-    width:100px;
-}
-
-.student img{
-    width:80px;
-    height:80px;
-}
-
-.student p{
+p,li{
     font-size:14px;
 }
 
-button{
-    width:50px;
-    height:50px;
+.project-title{
     font-size:20px;
 }
 
-.nav-buttons{
-    padding:0 12px;
+.doctor{
+    font-size:16px;
 }
 
-}
 .logo{
-    width:160px;       /* تقدر تتحكم بالحجم */
-    height:auto;
-    display:block;
-    margin:0 auto 30px auto; /* يخليه بالمنتصف */
-    border:none;       /* إزالة الإطار */
-    box-shadow:none;   /* إزالة الظل */
+    width:80px;
+}
+
+.student img{
+    width:70px;
+    height:70px;
+}
+
+.student p{
+    font-size:12px;
+}
+
+button{
+    width:45px;
+    height:45px;
+    font-size:18px;
+}
+
+.nav-buttons{
+    padding:0 10px;
+}
+
 }
 
 </style>
@@ -1216,6 +1344,28 @@ let currentSlide = 0;
 
 function updateSlider(){
 
+/* وضع الهاتف */
+
+if(window.innerWidth <= 768){
+
+slider.style.transform = 'none';
+
+let scrollPosition = window.scrollY;
+let documentHeight =
+document.body.scrollHeight - window.innerHeight;
+
+let progress =
+(documentHeight > 0)
+? (scrollPosition / documentHeight) * 100
+: 0;
+
+progressBar.style.width = progress + '%';
+
+return;
+}
+
+/* وضع الكمبيوتر */
+
 slider.style.transform =
 `translateX(-${currentSlide * 100}vw)`;
 
@@ -1226,7 +1376,19 @@ progressBar.style.width = progress + '%';
 
 }
 
+/* التالي */
+
 document.getElementById('next').onclick = () => {
+
+if(window.innerWidth <= 768){
+
+window.scrollBy({
+top: window.innerHeight,
+behavior:'smooth'
+});
+
+return;
+}
 
 if(currentSlide < slides.length - 1){
 currentSlide++;
@@ -1234,9 +1396,21 @@ updateSlider();
 }
 
 };
+
+/* السابق */
 
 document.getElementById('prev').onclick = () => {
 
+if(window.innerWidth <= 768){
+
+window.scrollBy({
+top: -window.innerHeight,
+behavior:'smooth'
+});
+
+return;
+}
+
 if(currentSlide > 0){
 currentSlide--;
 updateSlider();
@@ -1244,20 +1418,44 @@ updateSlider();
 
 };
 
+/* الكيبورد */
+
 document.addEventListener('keydown',(e)=>{
 
+if(window.innerWidth <= 768){
+return;
+}
+
 if(e.key === 'ArrowRight'){
+
 if(currentSlide < slides.length - 1){
 currentSlide++;
 updateSlider();
 }
+
 }
 
 if(e.key === 'ArrowLeft'){
+
 if(currentSlide > 0){
 currentSlide--;
 updateSlider();
 }
+
+}
+
+});
+
+/* تحديث عند تغيير الحجم */
+
+window.addEventListener('resize', updateSlider);
+
+/* تحديث عند السكرول بالموبايل */
+
+window.addEventListener('scroll', () => {
+
+if(window.innerWidth <= 768){
+updateSlider();
 }
 
 });
